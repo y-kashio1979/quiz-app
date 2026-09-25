@@ -15,8 +15,12 @@ export const HistoryComponent = ({ histories }: Props) => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {histories.map((history, index) => (
-              <HistoryItem key={history.id} no={index + 1} history={history} />
+            {[...histories].reverse().map((history, index) => (
+              <HistoryItem
+                key={history.id}
+                no={histories.length - index}
+                history={history}
+              />
             ))}
           </div>
         </div>

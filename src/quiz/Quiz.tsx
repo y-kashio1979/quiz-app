@@ -78,7 +78,10 @@ export const Quiz = () => {
       )}
 
       {gameStatus === GAME_STATUS.FINISH && (
-        <FinishPage restartQuiz={restartQuiz} answers={answers} />
+        <>
+          <FinishPage restartQuiz={restartQuiz} answers={answers} />
+          <HistoryComponent histories={histories} />
+        </>
       )}
     </div>
   );
