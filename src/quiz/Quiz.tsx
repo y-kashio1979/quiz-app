@@ -45,7 +45,7 @@ export const Quiz = () => {
 
   return (
     <div className="mt-10 flex min-h-screen flex-col items-center pb-20">
-      <h1 className="mb-10 text-3xl font-bold">クイズアプリ★</h1>
+      <h1 className="mb-10 text-3xl font-bold">★クイズアプリ★</h1>
 
       {gameStatus === GAME_STATUS.START && (
         <>
