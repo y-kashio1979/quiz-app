@@ -47,7 +47,7 @@ export const Quiz = () => {
       setGameStatus(GAME_STATUS.FINISH);
       setHistories((prev) => [
         ...prev,
-        { id: Date.now(), answerDate: new Date(), answers },
+        { id: Date.now(), answerDate: new Date(), answers: [...answers] },
       ]);
     }
   }, [isFinished]);
