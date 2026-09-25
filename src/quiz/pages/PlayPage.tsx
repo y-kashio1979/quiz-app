@@ -72,7 +72,7 @@ export const PlayPage = ({
               key={option.id}
               type="button"
               className="
-                min-h-[72px]
+                h-20
                 rounded-lg
                 border
                 p-4
