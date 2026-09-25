@@ -19,8 +19,14 @@ export const PlayPage = ({
   nextQuestion,
 }: Props) => {
   const LIMIT_TIME = 10;
-  const { timeLeft, isFinished, startTimer, stopTimer, resetTimer } =
-    useTimer(LIMIT_TIME);
+
+  const {
+    timeLeft,
+    isFinished,
+    startTimer,
+    stopTimer,
+    resetTimer,
+  } = useTimer(LIMIT_TIME);
 
   useEffect(() => {
     resetTimer();
@@ -44,34 +50,40 @@ export const PlayPage = ({
   };
 
   return (
-    <div className="mx-auto w-full max-w-2xl">
-      <div className="rounded-xl border bg-white p-8 shadow">
+    <div className="mx-auto w-full max-w-2xl px-4">
+      <div className="rounded-xl border bg-white p-4 shadow sm:p-6 md:p-8">
         <p className="mb-2 text-sm text-gray-500">
           問題 {currentIndex + 1} / {questionsCount}
         </p>
 
-        <p className="mb-8 whitespace-pre-line text-2xl font-bold">
+        <p className="mb-6 whitespace-pre-line text-xl font-bold sm:mb-8 sm:text-2xl md:text-3xl">
           {currentQuestion.contents}
         </p>
 
-        <TimerComponent title={"残り時間"} limitTime={LIMIT_TIME} timeLeft={timeLeft} />
+        <TimerComponent
+          title="残り時間"
+          limitTime={LIMIT_TIME}
+          timeLeft={timeLeft}
+        />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {currentQuestion.options.map((option) => (
             <button
               key={option.id}
               type="button"
               className="
+                min-h-[72px]
                 rounded-lg
                 border
                 p-4
                 text-center
-                text-lg
+                text-base
                 transition
-                hover:bg-blue-50
                 hover:border-blue-500
+                hover:bg-blue-50
                 hover:shadow
-                "
+                sm:text-lg
+              "
               onClick={() => selectOption(option.id)}
             >
               {option.text}
