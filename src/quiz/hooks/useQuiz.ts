@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Answer, Question } from "../types/question";
-import { questionsData } from "../datas/questions";
+import { questionMap, type Genre } from "../datas";
 
 const shuffleArray = <T>(array: T[]): T[] => {
   const shuffled = [...array];
@@ -14,8 +14,9 @@ const shuffleArray = <T>(array: T[]): T[] => {
   return shuffled;
 };
 
-const getQuestions = (questionNum: number = 5): Question[] => {
-  return shuffleArray(questionsData)
+const getQuestions = (genre: Genre, questionNum: number = 5): Question[] => {
+  const questions = questionMap[genre];
+  return shuffleArray(questions.questions)
     .slice(0, questionNum)
     .map((question) => ({
       ...question,
@@ -24,6 +25,7 @@ const getQuestions = (questionNum: number = 5): Question[] => {
 };
 
 interface UseQuizReturn {
+  genreName: string;
   questions: Question[];
   answers: Answer[];
   currentIndex: number;
@@ -34,19 +36,30 @@ interface UseQuizReturn {
   nextQuestion: () => void;
 }
 
-export const useQuiz = (questionNum: number = 5): UseQuizReturn => {
-  const [questions, setQuestions] = useState<Question[]>(getQuestions(questionNum));
+export const useQuiz = (
+  genre: Genre,
+  questionNum: number = 5,
+): UseQuizReturn => {
+  const [questions, setQuestions] = useState<Question[]>(() =>
+    getQuestions(genre, questionNum),
+  );
+  const genreName = questionMap[genre].genreName;
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-
   const currentQuestion: Question = questions[currentIndex];
+
+  useEffect(() => {
+    setQuestions(getQuestions(genre, questionNum));
+    setAnswers([]);
+    setCurrentIndex(0);
+  }, [genre, questionNum]);
 
   const answerQuestion = (question: Question, selectedId: number): void => {
     setAnswers((prev) => [...prev, { question, selectedId }]);
   };
 
   const resetQuiz = () => {
-    setQuestions(getQuestions(questionNum));
+    setQuestions(getQuestions(genre, questionNum));
     setAnswers([]);
     setCurrentIndex(0);
   };
@@ -61,6 +74,7 @@ export const useQuiz = (questionNum: number = 5): UseQuizReturn => {
     questions.length > 0 && answers.length === questions.length;
 
   return {
+    genreName,
     questions,
     answers,
     currentIndex,

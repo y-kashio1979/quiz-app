@@ -1,6 +1,6 @@
 import type { Question } from "../types/question";
 
-export const questionsData: Question[] = [
+export const triviaQuestions: Question[] = [
   {
     id: 1,
     contents: "日本の首都は？",

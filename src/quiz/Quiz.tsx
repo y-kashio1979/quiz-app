@@ -6,13 +6,22 @@ import { FinishPage } from "./pages/FinishPage";
 import { useQuiz } from "./hooks/useQuiz";
 import { HistoryComponent } from "./components/HistoryComponet";
 import type { History } from "./types/question";
+import { Navigate, useParams } from "react-router-dom";
+import { questionMap, type Genre } from "./datas";
 
 export const Quiz = () => {
+  const { genre } = useParams();
+
+  if (!genre || !(genre in questionMap)) {
+    return <Navigate to="/" replace />;
+  }
+
   const [gameStatus, setGameStatus] = useState<GameStatus>(GAME_STATUS.START);
   const [questionNum, setQuestionNum] = useState(5);
   const [histories, setHistories] = useState<History[]>([]);
 
   const {
+    genreName,
     questions,
     answers,
     currentIndex,
@@ -21,7 +30,7 @@ export const Quiz = () => {
     answerQuestion,
     resetQuiz,
     nextQuestion,
-  } = useQuiz(questionNum);
+  } = useQuiz(genre as Genre, questionNum);
 
   const startQuiz = (): void => {
     setGameStatus(GAME_STATUS.PLAYING);
@@ -45,7 +54,7 @@ export const Quiz = () => {
 
   return (
     <div className="mt-10 flex min-h-screen flex-col items-center pb-20">
-      <h1 className="mb-10 text-3xl font-bold">★クイズアプリ★</h1>
+      <h1 className="mb-10 text-3xl font-bold">★{genreName} クイズ★</h1>
 
       {gameStatus === GAME_STATUS.START && (
         <>

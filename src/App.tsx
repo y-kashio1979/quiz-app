@@ -1,24 +1,15 @@
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
-import "./App.css";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Quiz } from "./quiz/Quiz";
+import { HomePage } from "./quiz/pages/HomePage";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              <ul>
-                <li>
-                  <Link to="/quiz">クイズ</Link>
-                </li>
-              </ul>
-            </div>
-          }
-        />
-        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/quiz" element={<Navigate to="/" replace />} />
+        <Route path="/quiz/:genre" element={<Quiz />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

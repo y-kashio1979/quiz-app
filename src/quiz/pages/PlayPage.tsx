@@ -18,7 +18,7 @@ export const PlayPage = ({
   answerQuestion,
   nextQuestion,
 }: Props) => {
-  const LIMIT_TIME = 10;
+  const LIMIT_TIME = 30;
 
   const {
     timeLeft,
