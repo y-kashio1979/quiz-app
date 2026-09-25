@@ -18,7 +18,7 @@ export const FinishPage = ({ restartQuiz, answers }: Props) => {
     totalCount === 0 ? 0 : Math.round((correctCount / totalCount) * 100);
 
   return (
-    <div className="w-full max-w-md px-4">
+    <div className="w-full max-w-md px-6 sm:px-0">
       <div className="mb-6 rounded-2xl bg-white p-6 text-center shadow-lg sm:p-8">
         <h2 className="mb-6 text-2xl font-bold text-gray-800 sm:text-3xl">
           🎉 結果発表
@@ -47,21 +47,21 @@ export const FinishPage = ({ restartQuiz, answers }: Props) => {
 
       <button
         className="
-          w-full
-          rounded-2xl
-          bg-blue-500
-          py-3
-          text-lg
-          font-bold
-          text-white
-          shadow-md
-          transition-all
-          hover:bg-blue-600
-          hover:shadow-lg
-          active:scale-95
-          sm:py-4
-          sm:text-xl
-        "
+        w-full
+        rounded-2xl
+        bg-blue-500
+        py-3
+        text-lg
+        font-bold
+        text-white
+        shadow-md
+        transition-all
+        hover:bg-blue-600
+        hover:shadow-lg
+        active:scale-95
+        sm:py-4
+        sm:text-xl
+      "
         onClick={restartQuiz}
       >
         もう一度はじめる
