@@ -31,7 +31,7 @@ export const StartPage = ({
           value={userName}
           onChange={(e) => changeUserName(e.target.value)}
           placeholder="名前を入力してください"
-          maxLength={10}
+          maxLength={7}
           className="w-72 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
         />
       </div>
