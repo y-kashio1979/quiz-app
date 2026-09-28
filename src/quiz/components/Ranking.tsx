@@ -75,50 +75,68 @@ export const Ranking = ({ genre, currentScoreId, close }: Props) => {
                 ランキングがありません
               </p>
             ) : (
-              rankingDatas.map((item, index) => (
-                <div
-                  key={item.id}
-                  className={`flex items-center justify-between rounded-lg border p-4 transition ${
-                    index === 0
-                      ? "bg-yellow-200"
-                      : index === 1
-                        ? "bg-yellow-100"
-                        : index === 2
-                          ? "bg-yellow-50"
-                          : "bg-white"
-                  }`}
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="w-8 text-lg font-bold">{index + 1}位</span>
+              (() => {
+                let currentRank = 1;
 
-                    <div>
-                      <p className="font-semibold">
-                        {item.userName || "名無し"}
-                        {currentScoreId === item.id && (
-                          <span className="ml-2 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-bold tracking-wide text-white">
-                            NEW
+                return rankingDatas.map((item, index) => {
+                  if (
+                    index > 0 &&
+                    item.correctRate !== rankingDatas[index - 1].correctRate
+                  ) {
+                    currentRank = index + 1;
+                  }
+
+                  return (
+                    <div
+                      key={item.id}
+                      className={`flex items-center justify-between rounded-lg border p-4 transition ${
+                        currentRank === 1
+                          ? "bg-yellow-200"
+                          : currentRank === 2
+                            ? "bg-yellow-100"
+                            : currentRank === 3
+                              ? "bg-yellow-50"
+                              : "bg-white"
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className="w-8 text-lg font-bold">
+                          {currentRank}位
+                        </span>
+
+                        <div>
+                          <p className="font-semibold">
+                            {item.userName || "名無し"}
+
+                            {currentScoreId === item.id && (
+                              <span className="ml-2 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-bold tracking-wide text-white">
+                                NEW
+                              </span>
+                            )}
+                          </p>
+
+                          <p className="text-sm text-gray-500">
+                            {new Date(item.createdAt).toLocaleString("ja-JP")}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <p className="text-sm text-gray-500">
+                          正答率：
+                          <span className="text-lg font-bold text-blue-600">
+                            {item.correctRate}％
                           </span>
-                        )}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(item.createdAt).toLocaleString("ja-JP")}
-                      </p>
-                    </div>
-                  </div>
+                        </p>
 
-                  <div className="text-right">
-                    <p className="text-sm text-gray-500">
-                      正答率：
-                      <span className="text-lg font-bold text-blue-600">
-                        {item.correctRate}％
-                      </span>
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {item.correctCount}/{item.totalCount}問正解
-                    </p>
-                  </div>
-                </div>
-              ))
+                        <p className="text-sm text-gray-500">
+                          {item.correctCount}/{item.totalCount}問正解
+                        </p>
+                      </div>
+                    </div>
+                  );
+                });
+              })()
             )}
           </div>
         </div>
