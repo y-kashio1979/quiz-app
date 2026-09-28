@@ -36,6 +36,7 @@ export const Ranking = ({ genre, close }: Props) => {
           collection(db, "scores"),
           where("genre", "==", genre),
           orderBy("correctRate", "desc"),
+          orderBy("createdAt", "desc"),
           limit(10),
         );
         const snapshot = await getDocs(q);
@@ -84,7 +85,15 @@ export const Ranking = ({ genre, close }: Props) => {
               ranking.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between rounded-lg border p-4"
+                  className={`flex items-center justify-between rounded-lg border p-4 transition ${
+                    index === 0
+                      ? "bg-yellow-200"
+                      : index === 1
+                        ? "bg-yellow-100"
+                        : index === 2
+                          ? "bg-yellow-50"
+                          : "bg-white"
+                  }`}
                 >
                   <div className="flex items-center gap-4">
                     <span className="w-8 text-lg font-bold">{index + 1}位</span>
