@@ -64,28 +64,12 @@ export const Quiz = () => {
 
       {gameStatus === GAME_STATUS.START && (
         <>
-          <div className="mb-6">
-            <label
-              htmlFor="userName"
-              className="mb-2 block text-sm text-gray-500"
-            >
-              名前
-            </label>
-
-            <input
-              type="text"
-              id="userName"
-              value={userName}
-              onChange={(e) => changeUserName(e.target.value)}
-              placeholder="名前を入力してください"
-              maxLength={10}
-              className="w-72 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-            />
-          </div>
           <StartPage
             startQuiz={startQuiz}
             questionNum={questionNum}
             setQuestionNum={setQuestionNum}
+            userName={userName}
+            changeUserName={changeUserName}
           />
           <button
             type="button"

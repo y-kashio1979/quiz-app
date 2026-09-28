@@ -4,6 +4,8 @@ type Props = {
   startQuiz: () => void;
   questionNum: number;
   setQuestionNum: (num: number) => void;
+  userName: string;
+  changeUserName: (userName: string) => void;
 };
 
 const questionNums = [5, 10, 15, 20];
@@ -12,11 +14,27 @@ export const StartPage = ({
   startQuiz,
   questionNum,
   setQuestionNum,
+  userName,
+  changeUserName,
 }: Props) => {
   const navigate = useNavigate();
 
   return (
     <div>
+      <div className="mb-6">
+        <label htmlFor="userName" className="mb-2 block text-sm text-gray-500">
+          名前
+        </label>
+        <input
+          type="text"
+          id="userName"
+          value={userName}
+          onChange={(e) => changeUserName(e.target.value)}
+          placeholder="名前を入力してください"
+          maxLength={10}
+          className="w-72 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+        />
+      </div>
       <div className="mb-2 block text-sm text-gray-500">出題数を選択</div>
 
       <div className="mb-6 flex gap-2">
