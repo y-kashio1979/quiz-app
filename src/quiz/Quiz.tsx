@@ -8,8 +8,6 @@ import { HistoryComponent } from "./components/HistoryComponet";
 import type { History } from "./types/question";
 import { Navigate, useParams } from "react-router-dom";
 import { questionMap, type Genre } from "./datas";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../firebase";
 import { Ranking } from "./components/Ranking";
 
 export const Quiz = () => {
