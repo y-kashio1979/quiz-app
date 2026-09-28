@@ -115,9 +115,6 @@ export const Quiz = () => {
           >
             ランキングを見る
           </button>
-          {isShowRanking && (
-            <Ranking genre={genre} close={() => setIsShowRanking(false)} />
-          )}
           <HistoryComponent histories={histories} />
         </>
       )}
@@ -135,8 +132,19 @@ export const Quiz = () => {
       {gameStatus === GAME_STATUS.FINISH && (
         <>
           <FinishPage restartQuiz={restartQuiz} answers={answers} />
+          <button
+            type="button"
+            onClick={() => setIsShowRanking(true)}
+            className="rounded-md px-3 py-1 mt-4 text-sm text-blue-600 hover:bg-blue-50"
+          >
+            ランキングを見る
+          </button>
           <HistoryComponent histories={histories} />
         </>
+      )}
+
+      {isShowRanking && (
+        <Ranking genre={genre} close={() => setIsShowRanking(false)} />
       )}
     </div>
   );
