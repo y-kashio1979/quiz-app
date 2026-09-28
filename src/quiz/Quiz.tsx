@@ -5,9 +5,12 @@ import { PlayPage } from "./pages/PlayPage";
 import { FinishPage } from "./pages/FinishPage";
 import { useQuiz } from "./hooks/useQuiz";
 import { HistoryComponent } from "./components/HistoryComponet";
-import type { History } from "./types/question";
+import type { Answer, History } from "./types/question";
 import { Navigate, useParams } from "react-router-dom";
 import { questionMap, type Genre } from "./datas";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../firebase";
+import { Ranking } from "./components/Ranking";
 
 export const Quiz = () => {
   const { genre } = useParams();
@@ -19,6 +22,8 @@ export const Quiz = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>(GAME_STATUS.START);
   const [questionNum, setQuestionNum] = useState(5);
   const [histories, setHistories] = useState<History[]>([]);
+  const [userName, setUserName] = useState("");
+  const [isShowRanking, setIsShowRanking] = useState(false);
 
   const {
     genreName,
@@ -27,6 +32,9 @@ export const Quiz = () => {
     currentIndex,
     currentQuestion,
     isFinished,
+    totalCount,
+    correctCount,
+    correctRate,
     answerQuestion,
     resetQuiz,
     nextQuestion,
@@ -49,20 +57,67 @@ export const Quiz = () => {
         ...prev,
         { id: Date.now(), answerDate: new Date(), answers: [...answers] },
       ]);
+      saveScore();
     }
   }, [isFinished]);
 
+  const saveScore = async () => {
+    try {
+      console.log("保存開始");
+
+      const docRef = await addDoc(collection(db, "scores"), {
+        userName: userName,
+        genre: genre,
+        correctCount: correctCount,
+        correctRate: correctRate,
+        totalCount: totalCount,
+        createdAt: Date.now(),
+      });
+
+      console.log("保存成功", docRef.id);
+    } catch (error) {
+      console.error("保存失敗", error);
+    }
+  };
+
   return (
     <div className="mt-10 flex min-h-screen flex-col items-center pb-20">
-      <h1 className="mb-10 text-3xl font-bold">★{genreName} クイズ★</h1>
+      <h1 className="mb-5 text-3xl font-bold">★{genreName} クイズ★</h1>
 
       {gameStatus === GAME_STATUS.START && (
         <>
+          <div className="mb-6">
+            <label
+              htmlFor="userName"
+              className="mb-2 block text-sm text-gray-500"
+            >
+              名前
+            </label>
+
+            <input
+              type="text"
+              id="userName"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="名前を入力"
+              className="w-72 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+            />
+          </div>
           <StartPage
             startQuiz={startQuiz}
             questionNum={questionNum}
             setQuestionNum={setQuestionNum}
           />
+          <button
+            type="button"
+            onClick={() => setIsShowRanking(true)}
+            className="rounded-md px-3 py-1 mt-4 text-sm text-blue-600 hover:bg-blue-50"
+          >
+            ランキングを見る
+          </button>
+          {isShowRanking && (
+            <Ranking genre={genre} close={() => setIsShowRanking(false)} />
+          )}
           <HistoryComponent histories={histories} />
         </>
       )}

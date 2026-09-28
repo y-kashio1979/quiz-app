@@ -17,7 +17,7 @@ export const StartPage = ({
 
   return (
     <div>
-      <div className="mb-2 text-center text-sm text-gray-500">出題数を選択</div>
+      <div className="mb-2 block text-sm text-gray-500">出題数を選択</div>
 
       <div className="mb-6 flex gap-2">
         {questionNums.map((num) => (

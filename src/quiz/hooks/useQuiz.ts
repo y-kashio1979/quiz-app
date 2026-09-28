@@ -31,6 +31,9 @@ interface UseQuizReturn {
   currentIndex: number;
   currentQuestion: Question;
   isFinished: boolean;
+  totalCount: number;
+  correctCount: number;
+  correctRate: number;
   answerQuestion: (question: Question, answerId: number) => void;
   resetQuiz: () => void;
   nextQuestion: () => void;
@@ -73,6 +76,17 @@ export const useQuiz = (
   const isFinished =
     questions.length > 0 && answers.length === questions.length;
 
+  const totalCount = answers.length;
+
+  const correctCount = answers.reduce(
+    (sum, answer) =>
+      answer.question.answerId === answer.selectedId ? sum + 1 : sum,
+    0,
+  );
+
+  const correctRate =
+    totalCount === 0 ? 0 : Math.round((correctCount / totalCount) * 100);
+
   return {
     genreName,
     questions,
@@ -80,6 +94,9 @@ export const useQuiz = (
     currentIndex,
     currentQuestion,
     isFinished,
+    totalCount,
+    correctCount,
+    correctRate,
     answerQuestion,
     resetQuiz,
     nextQuestion,

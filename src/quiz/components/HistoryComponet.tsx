@@ -9,7 +9,7 @@ export const HistoryComponent = ({ histories }: Props) => {
   return (
     <>
       {histories && histories.length > 0 && (
-        <div className="mt-10">
+        <div className="mt-4">
           <h2 className="text-xl font-bold text-slate-800 mb-4 text-center">
             回答履歴
           </h2>
