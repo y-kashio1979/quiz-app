@@ -5,7 +5,7 @@ import { PlayPage } from "./pages/PlayPage";
 import { FinishPage } from "./pages/FinishPage";
 import { useQuiz } from "./hooks/useQuiz";
 import { HistoryComponent } from "./components/HistoryComponet";
-import type { Answer, History } from "./types/question";
+import type { History } from "./types/question";
 import { Navigate, useParams } from "react-router-dom";
 import { questionMap, type Genre } from "./datas";
 import { addDoc, collection } from "firebase/firestore";
