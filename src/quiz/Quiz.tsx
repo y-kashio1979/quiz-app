@@ -22,22 +22,21 @@ export const Quiz = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>(GAME_STATUS.START);
   const [questionNum, setQuestionNum] = useState(5);
   const [histories, setHistories] = useState<History[]>([]);
-  const [userName, setUserName] = useState("");
   const [isShowRanking, setIsShowRanking] = useState(false);
 
   const {
+    userName,
     genreName,
     questions,
     answers,
     currentIndex,
     currentQuestion,
     isFinished,
-    totalCount,
-    correctCount,
-    correctRate,
     answerQuestion,
     resetQuiz,
     nextQuestion,
+    changeUserName,
+    saveScore,
   } = useQuiz(genre as Genre, questionNum);
 
   const startQuiz = (): void => {
@@ -61,25 +60,6 @@ export const Quiz = () => {
     }
   }, [isFinished]);
 
-  const saveScore = async () => {
-    try {
-      console.log("保存開始");
-
-      const docRef = await addDoc(collection(db, "scores"), {
-        userName: userName,
-        genre: genre,
-        correctCount: correctCount,
-        correctRate: correctRate,
-        totalCount: totalCount,
-        createdAt: Date.now(),
-      });
-
-      console.log("保存成功", docRef.id);
-    } catch (error) {
-      console.error("保存失敗", error);
-    }
-  };
-
   return (
     <div className="mt-10 flex min-h-screen flex-col items-center pb-20">
       <h1 className="mb-5 text-3xl font-bold">★{genreName} クイズ★</h1>
@@ -98,7 +78,7 @@ export const Quiz = () => {
               type="text"
               id="userName"
               value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              onChange={(e) => changeUserName(e.target.value)}
               placeholder="名前を入力してください"
               maxLength={10}
               className="w-72 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"

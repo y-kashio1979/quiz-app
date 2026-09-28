@@ -9,31 +9,23 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { questionMap, type Genre } from "../datas";
+import type { RankingData } from "../types/question";
+import { SCORES_TABLE } from "../hooks/useQuiz";
 
 type Props = {
   genre: string;
   close: () => void;
 };
 
-type RankingData = {
-  id: string;
-  userName: string;
-  genre: string;
-  correctCount: number;
-  totalCount: number;
-  correctRate: number;
-  createdAt: number;
-};
-
 export const Ranking = ({ genre, close }: Props) => {
-  const [ranking, setRanking] = useState<RankingData[]>([]);
+  const [rankingDatas, setRankingDatas] = useState<RankingData[]>([]);
   const genreName = questionMap[genre as Genre].genreName;
 
   useEffect(() => {
     const getRanking = async () => {
       try {
         const q = query(
-          collection(db, "scores"),
+          collection(db, SCORES_TABLE),
           where("genre", "==", genre),
           orderBy("correctRate", "desc"),
           orderBy("createdAt", "desc"),
@@ -44,7 +36,7 @@ export const Ranking = ({ genre, close }: Props) => {
           id: doc.id,
           ...doc.data(),
         })) as RankingData[];
-        setRanking(data);
+        setRankingDatas(data);
       } catch (error) {
         console.error("ランキング取得失敗", error);
       }
@@ -77,12 +69,12 @@ export const Ranking = ({ genre, close }: Props) => {
         {/* スクロール領域 */}
         <div className="flex-1 overflow-y-auto p-6">
           <div className="space-y-3">
-            {ranking.length === 0 ? (
+            {rankingDatas.length === 0 ? (
               <p className="text-center text-gray-500">
                 ランキングがありません
               </p>
             ) : (
-              ranking.map((item, index) => (
+              rankingDatas.map((item, index) => (
                 <div
                   key={item.id}
                   className={`flex items-center justify-between rounded-lg border p-4 transition ${

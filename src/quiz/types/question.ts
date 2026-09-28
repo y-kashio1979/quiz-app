@@ -20,3 +20,13 @@ export interface History {
     answerDate: Date;
     answers: Answer[];
 }
+
+export interface RankingData {
+  id: string;
+  userName: string;
+  genre: string;
+  correctCount: number;
+  totalCount: number;
+  correctRate: number;
+  createdAt: number;
+};

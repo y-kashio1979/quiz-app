@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import type { Answer, Question } from "../types/question";
 import { questionMap, type Genre } from "../datas";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../firebase";
+
+export const SCORES_TABLE = "scores";
 
 const shuffleArray = <T>(array: T[]): T[] => {
   const shuffled = [...array];
@@ -25,6 +29,7 @@ const getQuestions = (genre: Genre, questionNum: number = 5): Question[] => {
 };
 
 interface UseQuizReturn {
+  userName: string;
   genreName: string;
   questions: Question[];
   answers: Answer[];
@@ -37,6 +42,8 @@ interface UseQuizReturn {
   answerQuestion: (question: Question, answerId: number) => void;
   resetQuiz: () => void;
   nextQuestion: () => void;
+  changeUserName: (userName: string) => void;
+  saveScore: () => void;
 }
 
 export const useQuiz = (
@@ -50,6 +57,7 @@ export const useQuiz = (
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const currentQuestion: Question = questions[currentIndex];
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     setQuestions(getQuestions(genre, questionNum));
@@ -73,6 +81,10 @@ export const useQuiz = (
     }
   };
 
+  const changeUserName = (userName: string): void => {
+    setUserName(userName);
+  };
+
   const isFinished =
     questions.length > 0 && answers.length === questions.length;
 
@@ -87,7 +99,25 @@ export const useQuiz = (
   const correctRate =
     totalCount === 0 ? 0 : Math.round((correctCount / totalCount) * 100);
 
+  const saveScore = async () => {
+    try {
+      const docRef = await addDoc(collection(db, SCORES_TABLE), {
+        userName: userName,
+        genre: genre,
+        correctCount: correctCount,
+        correctRate: correctRate,
+        totalCount: totalCount,
+        createdAt: Date.now(),
+      });
+
+      console.log("保存成功", docRef.id);
+    } catch (error) {
+      console.error("保存失敗", error);
+    }
+  };
+
   return {
+    userName,
     genreName,
     questions,
     answers,
@@ -100,5 +130,7 @@ export const useQuiz = (
     answerQuestion,
     resetQuiz,
     nextQuestion,
+    changeUserName,
+    saveScore,
   };
 };
