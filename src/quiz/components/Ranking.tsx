@@ -100,8 +100,11 @@ export const Ranking = ({ genre, close }: Props) => {
                   </div>
 
                   <div className="text-right">
-                    <p className="text-lg font-bold text-blue-600">
-                      {item.correctRate}%
+                    <p className="text-sm text-gray-500">
+                      正答率：
+                      <span className="text-lg font-bold text-blue-600">
+                        {item.correctRate}％
+                      </span>
                     </p>
                     <p className="text-sm text-gray-500">
                       {item.correctCount}/{item.totalCount}問正解
