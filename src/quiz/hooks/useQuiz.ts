@@ -39,6 +39,7 @@ interface UseQuizReturn {
   totalCount: number;
   correctCount: number;
   correctRate: number;
+  currentScoreId: string;
   answerQuestion: (question: Question, answerId: number) => void;
   resetQuiz: () => void;
   nextQuestion: () => void;
@@ -58,6 +59,7 @@ export const useQuiz = (
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const currentQuestion: Question = questions[currentIndex];
   const [userName, setUserName] = useState("");
+  const [currentScoreId, setCurrentScoreId] = useState("");
 
   useEffect(() => {
     setQuestions(getQuestions(genre, questionNum));
@@ -110,6 +112,7 @@ export const useQuiz = (
         createdAt: Date.now(),
       });
 
+      setCurrentScoreId(docRef.id);
       console.log("保存成功", docRef.id);
     } catch (error) {
       console.error("保存失敗", error);
@@ -127,6 +130,7 @@ export const useQuiz = (
     totalCount,
     correctCount,
     correctRate,
+    currentScoreId,
     answerQuestion,
     resetQuiz,
     nextQuestion,

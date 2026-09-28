@@ -14,10 +14,11 @@ import { SCORES_TABLE } from "../hooks/useQuiz";
 
 type Props = {
   genre: string;
+  currentScoreId: string;
   close: () => void;
 };
 
-export const Ranking = ({ genre, close }: Props) => {
+export const Ranking = ({ genre, currentScoreId, close }: Props) => {
   const [rankingDatas, setRankingDatas] = useState<RankingData[]>([]);
   const genreName = questionMap[genre as Genre].genreName;
 
@@ -93,6 +94,11 @@ export const Ranking = ({ genre, close }: Props) => {
                     <div>
                       <p className="font-semibold">
                         {item.userName || "名無し"}
+                        {currentScoreId === item.id && (
+                          <span className="ml-2 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-bold tracking-wide text-white">
+                            NEW
+                          </span>
+                        )}
                       </p>
                       <p className="text-sm text-gray-500">
                         {new Date(item.createdAt).toLocaleString("ja-JP")}

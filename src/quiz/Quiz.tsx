@@ -30,6 +30,7 @@ export const Quiz = () => {
     currentIndex,
     currentQuestion,
     isFinished,
+    currentScoreId,
     answerQuestion,
     resetQuiz,
     nextQuestion,
@@ -107,7 +108,11 @@ export const Quiz = () => {
       )}
 
       {isShowRanking && (
-        <Ranking genre={genre} close={() => setIsShowRanking(false)} />
+        <Ranking
+          genre={genre}
+          currentScoreId={currentScoreId}
+          close={() => setIsShowRanking(false)}
+        />
       )}
     </div>
   );
