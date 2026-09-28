@@ -72,14 +72,6 @@ export const Quiz = () => {
             userName={userName}
             changeUserName={changeUserName}
           />
-          <button
-            type="button"
-            onClick={() => setIsShowRanking(true)}
-            className="rounded-md px-3 py-1 mt-4 text-sm text-blue-600 hover:bg-blue-50"
-          >
-            ランキングを見る
-          </button>
-          <HistoryComponent histories={histories} />
         </>
       )}
 
@@ -96,13 +88,20 @@ export const Quiz = () => {
       {gameStatus === GAME_STATUS.FINISH && (
         <>
           <FinishPage restartQuiz={restartQuiz} answers={answers} />
+        </>
+      )}
+
+      {(gameStatus === GAME_STATUS.START ||
+        gameStatus === GAME_STATUS.FINISH) && (
+        <>
           <button
             type="button"
             onClick={() => setIsShowRanking(true)}
-            className="rounded-md px-3 py-1 mt-4 text-sm text-blue-600 hover:bg-blue-50"
+            className="mt-4 rounded-md px-3 py-1 text-sm text-blue-600 hover:bg-blue-50"
           >
-            ランキングを見る
+            🏆ランキングを見る
           </button>
+
           <HistoryComponent histories={histories} />
         </>
       )}

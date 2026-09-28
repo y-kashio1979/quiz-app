@@ -56,7 +56,7 @@ export const Ranking = ({ genre, currentScoreId, close }: Props) => {
       >
         {/* ヘッダー */}
         <div className="flex items-center justify-between border-b p-6">
-          <h2 className="text-xl font-bold">ランキング（{genreName}）</h2>
+          <h2 className="text-xl font-bold">🏆ランキング（{genreName}）</h2>
 
           <button
             type="button"
