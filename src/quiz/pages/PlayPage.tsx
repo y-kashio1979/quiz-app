@@ -9,6 +9,7 @@ type Props = {
   questionsCount: number;
   answerQuestion: (question: Question, selectedId: number) => void;
   nextQuestion: () => void;
+  restartQuiz: () => void;
 };
 
 export const PlayPage = ({
@@ -17,6 +18,7 @@ export const PlayPage = ({
   questionsCount,
   answerQuestion,
   nextQuestion,
+  restartQuiz,
 }: Props) => {
   const LIMIT_TIME = 30;
 
@@ -44,7 +46,7 @@ export const PlayPage = ({
     setSelectedId(selectedId);
     stopTimer();
 
-    setTimeout(() => {  
+    setTimeout(() => {
       answerQuestion(currentQuestion, selectedId);
       nextQuestion();
       setSelectedId(null);
@@ -74,7 +76,7 @@ export const PlayPage = ({
               key={option.id}
               type="button"
               className={`
-                h-20
+                h-15
                 rounded-lg
                 border
                 p-4
@@ -92,6 +94,28 @@ export const PlayPage = ({
           ))}
         </div>
       </div>
+      <button
+        className="
+        mt-4
+        w-full
+        rounded-2xl
+        bg-blue-500
+        py-3
+        text-lg
+        font-bold
+        text-white
+        shadow-md
+        transition-all
+        hover:bg-blue-600
+        hover:shadow-lg
+        active:scale-95
+        sm:py-4
+        sm:text-xl
+      "
+        onClick={restartQuiz}
+      >
+        クイズを終了
+      </button>
     </div>
   );
 };

@@ -100,6 +100,7 @@ export const Quiz = () => {
           questionsCount={questions.length}
           answerQuestion={answerQuestion}
           nextQuestion={nextQuestion}
+          restartQuiz={restartQuiz}
         />
       )}
 
