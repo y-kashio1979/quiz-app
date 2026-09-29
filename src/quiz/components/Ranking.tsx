@@ -13,6 +13,7 @@ import { questionMap, type Genre } from "../datas";
 import type { RankingData } from "../types/question";
 import { SCORES_TABLE } from "../hooks/useQuiz";
 import type { User } from "firebase/auth";
+import { motion } from "framer-motion";
 
 type Props = {
   genre: string;
@@ -81,11 +82,30 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
   );
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={close}
     >
-      <div
+      <motion.div
+        initial={{
+          opacity: 0,
+          scale: 0.9,
+          y: 40,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          y: 0,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 280,
+          damping: 22,
+        }}
         className="flex h-[90vh] w-full max-w-3xl flex-col rounded-xl bg-white shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
@@ -109,17 +129,17 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
               <p className="text-xs text-gray-500">プレイ回数</p>
               <p className="text-xl font-bold text-blue-600">{playCount}</p>
             </div>
-             
+
             <div className="rounded-lg bg-white p-3 text-center shadow-sm">
               <p className="text-xs text-gray-500">最高正答率</p>
               <p className="text-xl font-bold text-yellow-600">{bestRate}%</p>
             </div>
-             
+
             <div className="rounded-lg bg-white p-3 text-center shadow-sm">
               <p className="text-xs text-gray-500">平均正答率</p>
               <p className="text-xl font-bold text-green-600">{averageRate}%</p>
             </div>
-             
+
             <div className="rounded-lg bg-white p-3 text-center shadow-sm">
               <p className="text-xs text-gray-500">総正解数</p>
               <p className="text-xl font-bold text-purple-600">
@@ -149,17 +169,34 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
                   }
 
                   return (
-                    <div
+                    <motion.div
                       key={item.id}
-                      className={`flex items-center justify-between rounded-lg border p-4 transition ${
-                        currentRank === 1
-                          ? "bg-yellow-200"
-                          : currentRank === 2
-                            ? "bg-yellow-100"
-                            : currentRank === 3
-                              ? "bg-yellow-50"
-                              : "bg-white"
-                      }`}
+                      initial={{
+                        opacity: 0,
+                        y: 20,
+                        scale: 0.95,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                      }}
+                      transition={{
+                        duration: 0.3,
+                        delay: index * 0.05,
+                      }}
+                      className={`
+                        flex items-center justify-between rounded-lg border p-4
+                        ${
+                          currentRank === 1
+                            ? "bg-yellow-200"
+                            : currentRank === 2
+                              ? "bg-yellow-100"
+                              : currentRank === 3
+                                ? "bg-yellow-50"
+                                : "bg-white"
+                        }
+                      `}
                     >
                       <div className="flex items-center gap-4">
                         <span className="w-8 text-lg font-bold">
@@ -195,7 +232,7 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
                           {item.correctCount}/{item.totalCount}問正解
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 });
               })()
@@ -215,7 +252,7 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
