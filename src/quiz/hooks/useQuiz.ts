@@ -3,6 +3,7 @@ import type { Answer, Question } from "../types/question";
 import { questionMap, type Genre } from "../datas";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../firebase";
+import { useGoogle } from "./useGoogle";
 
 export const SCORES_TABLE = "scores";
 
@@ -60,6 +61,7 @@ export const useQuiz = (
   const currentQuestion: Question = questions[currentIndex];
   const [userName, setUserName] = useState("");
   const [currentScoreId, setCurrentScoreId] = useState("");
+  const { user } = useGoogle();
 
   useEffect(() => {
     setQuestions(getQuestions(genre, questionNum));
@@ -104,7 +106,8 @@ export const useQuiz = (
   const saveScore = async () => {
     try {
       const docRef = await addDoc(collection(db, SCORES_TABLE), {
-        userName: userName,
+        userId: user?.uid ?? "",
+        userName: user ? (user.displayName ?? "") : userName,
         genre: genre,
         correctCount: correctCount,
         correctRate: correctRate,

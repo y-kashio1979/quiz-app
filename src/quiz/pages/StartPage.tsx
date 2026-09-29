@@ -1,8 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { GoogleLoginButton } from "../components/GoogleLoginButton";
-import { onAuthStateChanged, type User } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { auth } from "../../firebase";
+import { useGoogle } from "../hooks/useGoogle";
 
 type Props = {
   startQuiz: () => void;
@@ -22,19 +20,12 @@ export const StartPage = ({
   changeUserName,
 }: Props) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    return onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      changeUserName(user?.displayName ?? "");
-    });
-  }, []);
+  const { user } = useGoogle();
 
   return (
     <div>
       <div className="mb-6">
-        <GoogleLoginButton user={user} />
+        <GoogleLoginButton />
         <label
           htmlFor="userName"
           className="mt-4 mb-2 block text-sm text-gray-700"
@@ -45,7 +36,7 @@ export const StartPage = ({
           <input
             type="text"
             id="userName"
-            value={userName ?? ""}
+            value={user ? (user.displayName ?? "") : userName}
             readOnly={!!user}
             onChange={(e) => changeUserName(e.target.value)}
             placeholder="名前を入力してください"
