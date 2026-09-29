@@ -1,4 +1,8 @@
 import { useNavigate } from "react-router-dom";
+import { GoogleLoginButton } from "../components/GoogleLoginButton";
+import { onAuthStateChanged, type User } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { auth } from "../../firebase";
 
 type Props = {
   startQuiz: () => void;
@@ -18,24 +22,61 @@ export const StartPage = ({
   changeUserName,
 }: Props) => {
   const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    return onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      changeUserName(user?.displayName ?? "");
+    });
+  }, []);
 
   return (
     <div>
       <div className="mb-6">
-        <label htmlFor="userName" className="mb-2 block text-sm text-gray-500">
+        <GoogleLoginButton user={user} />
+        <label
+          htmlFor="userName"
+          className="mt-4 mb-2 block text-sm text-gray-700"
+        >
           名前
         </label>
-        <input
-          type="text"
-          id="userName"
-          value={userName}
-          onChange={(e) => changeUserName(e.target.value)}
-          placeholder="名前を入力してください"
-          maxLength={7}
-          className="w-72 rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-        />
+        <div className="relative w-72">
+          <input
+            type="text"
+            id="userName"
+            value={userName ?? ""}
+            readOnly={!!user}
+            onChange={(e) => changeUserName(e.target.value)}
+            placeholder="名前を入力してください"
+            maxLength={10}
+            className={`
+            w-72
+            rounded-lg
+            border
+            px-4
+            py-2
+            focus:outline-none
+            ${
+              user
+                ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-500"
+                : "border-gray-300 focus:border-blue-500"
+            }
+          `}
+          />
+          {user && (
+            <span className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400">
+              🔒
+            </span>
+          )}
+        </div>
+        {user && (
+          <p className="mt-1 text-xs text-gray-500">
+            Googleアカウント名を使用しています
+          </p>
+        )}
       </div>
-      <div className="mb-2 block text-sm text-gray-500">出題数を選択</div>
+      <div className="mb-2 block text-sm text-gray-700">出題数を選択</div>
 
       <div className="mb-6 flex gap-2">
         {questionNums.map((num) => (
