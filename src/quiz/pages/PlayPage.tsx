@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTimer } from "../hooks/useTimer";
 import type { Question } from "../types/question";
 import { TimerComponent } from "../components/TimerComponent";
@@ -20,13 +20,8 @@ export const PlayPage = ({
 }: Props) => {
   const LIMIT_TIME = 30;
 
-  const {
-    timeLeft,
-    isFinished,
-    startTimer,
-    stopTimer,
-    resetTimer,
-  } = useTimer(LIMIT_TIME);
+  const { timeLeft, isFinished, startTimer, stopTimer, resetTimer } =
+    useTimer(LIMIT_TIME);
 
   useEffect(() => {
     resetTimer();
@@ -43,10 +38,17 @@ export const PlayPage = ({
     return () => clearTimeout(timeoutId);
   }, [isFinished]);
 
-  const selectOption = (selectedId: number): void => {
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const selectOption = (selectedId: number) => {
+    setSelectedId(selectedId);
     stopTimer();
-    answerQuestion(currentQuestion, selectedId);
-    nextQuestion();
+
+    setTimeout(() => {  
+      answerQuestion(currentQuestion, selectedId);
+      nextQuestion();
+      setSelectedId(null);
+    }, 200);
   };
 
   return (
@@ -71,19 +73,18 @@ export const PlayPage = ({
             <button
               key={option.id}
               type="button"
-              className="
+              className={`
                 h-20
                 rounded-lg
                 border
                 p-4
-                text-center
-                text-base
                 transition
-                hover:border-blue-500
-                hover:bg-blue-50
-                hover:shadow
-                sm:text-lg
-              "
+                ${
+                  selectedId === option.id
+                    ? "border-blue-600 bg-blue-500 text-white"
+                    : "hover:border-blue-500 hover:bg-blue-50"
+                }
+                `}
               onClick={() => selectOption(option.id)}
             >
               {option.text}
