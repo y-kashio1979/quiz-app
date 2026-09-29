@@ -5,33 +5,43 @@ import {
   limit,
   orderBy,
   query,
+  QueryConstraint,
   where,
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { questionMap, type Genre } from "../datas";
 import type { RankingData } from "../types/question";
 import { SCORES_TABLE } from "../hooks/useQuiz";
+import type { User } from "firebase/auth";
 
 type Props = {
   genre: string;
   currentScoreId: string;
+  user?: User | null;
   close: () => void;
 };
 
-export const Ranking = ({ genre, currentScoreId, close }: Props) => {
+export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
   const [rankingDatas, setRankingDatas] = useState<RankingData[]>([]);
   const genreName = questionMap[genre as Genre].genreName;
 
   useEffect(() => {
     const getRanking = async () => {
+      const queryConstraints: QueryConstraint[] = [
+        where("genre", "==", genre),
+        orderBy("correctRate", "desc"),
+        orderBy("createdAt", "desc"),
+      ];
+
+      if (user) {
+        queryConstraints.push(where("userId", "==", user.uid));
+      } else {
+        queryConstraints.push(limit(10));
+      }
+
+      const q = query(collection(db, SCORES_TABLE), ...queryConstraints);
+
       try {
-        const q = query(
-          collection(db, SCORES_TABLE),
-          where("genre", "==", genre),
-          orderBy("correctRate", "desc"),
-          orderBy("createdAt", "desc"),
-          limit(10),
-        );
         const snapshot = await getDocs(q);
         const data = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -45,6 +55,31 @@ export const Ranking = ({ genre, currentScoreId, close }: Props) => {
     getRanking();
   }, []);
 
+  const playCount = rankingDatas.length;
+
+  const bestRate =
+    rankingDatas.length > 0
+      ? Math.max(...rankingDatas.map((x) => x.correctRate))
+      : 0;
+
+  const averageRate =
+    rankingDatas.length > 0
+      ? Math.round(
+          rankingDatas.reduce((sum, x) => sum + x.correctRate, 0) /
+            rankingDatas.length,
+        )
+      : 0;
+
+  const totalCorrectCount = rankingDatas.reduce(
+    (sum, x) => sum + x.correctCount,
+    0,
+  );
+
+  const totalQuestionCount = rankingDatas.reduce(
+    (sum, x) => sum + x.totalCount,
+    0,
+  );
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
@@ -56,7 +91,9 @@ export const Ranking = ({ genre, currentScoreId, close }: Props) => {
       >
         {/* ヘッダー */}
         <div className="flex items-center justify-between border-b p-6">
-          <h2 className="text-xl font-bold">🏆ランキング（{genreName}）</h2>
+          <h2 className="text-xl font-bold">
+            🏆{user ? "個人成績" : "ランキング"}（{genreName}）
+          </h2>
 
           <button
             type="button"
@@ -66,6 +103,31 @@ export const Ranking = ({ genre, currentScoreId, close }: Props) => {
             ✕
           </button>
         </div>
+        {user && (
+          <div className="grid grid-cols-2 gap-3 border-b bg-gray-50 p-4 md:grid-cols-4">
+            <div className="rounded-lg bg-white p-3 text-center shadow-sm">
+              <p className="text-xs text-gray-500">プレイ回数</p>
+              <p className="text-xl font-bold text-blue-600">{playCount}</p>
+            </div>
+             
+            <div className="rounded-lg bg-white p-3 text-center shadow-sm">
+              <p className="text-xs text-gray-500">最高正答率</p>
+              <p className="text-xl font-bold text-yellow-600">{bestRate}%</p>
+            </div>
+             
+            <div className="rounded-lg bg-white p-3 text-center shadow-sm">
+              <p className="text-xs text-gray-500">平均正答率</p>
+              <p className="text-xl font-bold text-green-600">{averageRate}%</p>
+            </div>
+             
+            <div className="rounded-lg bg-white p-3 text-center shadow-sm">
+              <p className="text-xs text-gray-500">総正解数</p>
+              <p className="text-xl font-bold text-purple-600">
+                {totalCorrectCount}/{totalQuestionCount}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* スクロール領域 */}
         <div className="flex-1 overflow-y-auto p-6">
@@ -78,7 +140,7 @@ export const Ranking = ({ genre, currentScoreId, close }: Props) => {
               (() => {
                 let currentRank = 1;
 
-                return rankingDatas.map((item, index) => {
+                return rankingDatas.slice(0, 10).map((item, index) => {
                   if (
                     index > 0 &&
                     item.correctRate !== rankingDatas[index - 1].correctRate

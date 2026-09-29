@@ -23,6 +23,7 @@ export const Quiz = () => {
   const [questionNum, setQuestionNum] = useState(5);
   const [histories, setHistories] = useState<History[]>([]);
   const [isShowRanking, setIsShowRanking] = useState(false);
+  const [isShowMyRanking, setIsShowMyRanking] = useState(false);
 
   const {
     userName,
@@ -69,7 +70,18 @@ export const Quiz = () => {
 
       {gameStatus === GAME_STATUS.START && (
         <>
-          <GoogleLoginButton user={user} login={login} logout={logout} />
+          <div className="flex gap-2">
+            <GoogleLoginButton user={user} login={login} logout={logout} />
+            {user && (
+              <button
+                type="button"
+                onClick={() => setIsShowMyRanking(true)}
+                className="mt-4 rounded-md px-3 py-1 text-sm text-blue-600 hover:bg-blue-50"
+              >
+                👤個人成績を見る
+              </button>
+            )}
+          </div>
           <StartPage
             startQuiz={startQuiz}
             questionNum={questionNum}
@@ -117,6 +129,15 @@ export const Quiz = () => {
           genre={genre}
           currentScoreId={currentScoreId}
           close={() => setIsShowRanking(false)}
+        />
+      )}
+
+      {isShowMyRanking && (
+        <Ranking
+          genre={genre}
+          currentScoreId={currentScoreId}
+          user={user}
+          close={() => setIsShowMyRanking(false)}
         />
       )}
     </div>
