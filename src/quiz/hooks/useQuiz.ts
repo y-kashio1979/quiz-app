@@ -3,7 +3,7 @@ import type { Answer, Question } from "../types/question";
 import { questionMap, type Genre } from "../datas";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../firebase";
-import { useGoogle } from "./useGoogle";
+import type { User } from "firebase/auth";
 
 export const SCORES_TABLE = "scores";
 
@@ -29,29 +29,7 @@ const getQuestions = (genre: Genre, questionNum: number = 5): Question[] => {
     }));
 };
 
-interface UseQuizReturn {
-  userName: string;
-  genreName: string;
-  questions: Question[];
-  answers: Answer[];
-  currentIndex: number;
-  currentQuestion: Question;
-  isFinished: boolean;
-  totalCount: number;
-  correctCount: number;
-  correctRate: number;
-  currentScoreId: string;
-  answerQuestion: (question: Question, answerId: number) => void;
-  resetQuiz: () => void;
-  nextQuestion: () => void;
-  changeUserName: (userName: string) => void;
-  saveScore: () => void;
-}
-
-export const useQuiz = (
-  genre: Genre,
-  questionNum: number = 5,
-): UseQuizReturn => {
+export const useQuiz = (genre: Genre, questionNum: number = 5) => {
   const [questions, setQuestions] = useState<Question[]>(() =>
     getQuestions(genre, questionNum),
   );
@@ -61,7 +39,6 @@ export const useQuiz = (
   const currentQuestion: Question = questions[currentIndex];
   const [userName, setUserName] = useState("");
   const [currentScoreId, setCurrentScoreId] = useState("");
-  const { user } = useGoogle();
 
   useEffect(() => {
     setQuestions(getQuestions(genre, questionNum));
@@ -103,7 +80,7 @@ export const useQuiz = (
   const correctRate =
     totalCount === 0 ? 0 : Math.round((correctCount / totalCount) * 100);
 
-  const saveScore = async () => {
+  const saveScore = async (user: User | null) => {
     try {
       const docRef = await addDoc(collection(db, SCORES_TABLE), {
         userId: user?.uid ?? "",

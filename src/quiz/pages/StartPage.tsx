@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { GoogleLoginButton } from "../components/GoogleLoginButton";
-import { useGoogle } from "../hooks/useGoogle";
+import type { User } from "firebase/auth";
 
 type Props = {
   startQuiz: () => void;
@@ -8,6 +7,7 @@ type Props = {
   setQuestionNum: (num: number) => void;
   userName: string;
   changeUserName: (userName: string) => void;
+  user: User | null;
 };
 
 const questionNums = [5, 10, 15, 20];
@@ -16,16 +16,15 @@ export const StartPage = ({
   startQuiz,
   questionNum,
   setQuestionNum,
+  user,
   userName,
   changeUserName,
 }: Props) => {
   const navigate = useNavigate();
-  const { user } = useGoogle();
 
   return (
     <div>
       <div className="mb-6">
-        <GoogleLoginButton />
         <label
           htmlFor="userName"
           className="mt-4 mb-2 block text-sm text-gray-700"

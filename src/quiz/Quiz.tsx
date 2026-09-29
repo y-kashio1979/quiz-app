@@ -9,6 +9,8 @@ import type { History } from "./types/question";
 import { Navigate, useParams } from "react-router-dom";
 import { questionMap, type Genre } from "./datas";
 import { Ranking } from "./components/Ranking";
+import { useGoogle } from "./hooks/useGoogle";
+import { GoogleLoginButton } from "./components/GoogleLoginButton";
 
 export const Quiz = () => {
   const { genre } = useParams();
@@ -38,6 +40,8 @@ export const Quiz = () => {
     saveScore,
   } = useQuiz(genre as Genre, questionNum);
 
+  const { user, login, logout } = useGoogle();
+
   const startQuiz = (): void => {
     setGameStatus(GAME_STATUS.PLAYING);
     resetQuiz();
@@ -55,7 +59,7 @@ export const Quiz = () => {
         ...prev,
         { id: Date.now(), answerDate: new Date(), answers: [...answers] },
       ]);
-      saveScore();
+      saveScore(user);
     }
   }, [isFinished]);
 
@@ -65,12 +69,14 @@ export const Quiz = () => {
 
       {gameStatus === GAME_STATUS.START && (
         <>
+          <GoogleLoginButton user={user} login={login} logout={logout} />
           <StartPage
             startQuiz={startQuiz}
             questionNum={questionNum}
             setQuestionNum={setQuestionNum}
             userName={userName}
             changeUserName={changeUserName}
+            user={user}
           />
         </>
       )}

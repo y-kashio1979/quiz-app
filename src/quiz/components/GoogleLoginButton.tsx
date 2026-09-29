@@ -1,8 +1,13 @@
-import { useGoogle } from "../hooks/useGoogle";
+import type { User } from "firebase/auth";
 import googleLogo from "../../assets/google.svg";
 
-export const GoogleLoginButton = () => {
-  const {user, login, logout} = useGoogle();
+type Props = {
+  user: User | null;
+  login: () => Promise<void>;
+  logout: () => Promise<void>;
+};
+
+export const GoogleLoginButton = ({ user, login, logout }: Props) => {
 
   return (
     <div>
