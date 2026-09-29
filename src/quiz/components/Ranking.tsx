@@ -25,7 +25,7 @@ type Props = {
 export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
   const [rankingDatas, setRankingDatas] = useState<RankingData[]>([]);
   const genreName = questionMap[genre as Genre].genreName;
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const newItemRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const getRanking = async () => {
@@ -58,25 +58,15 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (!scrollRef.current || !currentScoreId) {
-      return;
-    }
-
     const timer = setTimeout(() => {
-      const target = document.getElementById(`ranking-${currentScoreId}`);
-
-      if (!target || !scrollRef.current) {
-        return;
-      }
-
-      scrollRef.current.scrollTo({
-        top: target.offsetTop - 150,
+      newItemRef.current?.scrollIntoView({
         behavior: "smooth",
+        block: "center",
       });
-    }, 1500);
+    }, 2000);
 
     return () => clearTimeout(timer);
-  }, [rankingDatas, currentScoreId]);
+  }, [rankingDatas]);
 
   const playCount = rankingDatas.length;
 
@@ -172,7 +162,7 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
         )}
 
         {/* スクロール領域 */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6">
           <div className="space-y-3">
             {rankingDatas.length === 0 ? (
               <p className="text-center text-gray-500">
@@ -192,6 +182,7 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
 
                   return (
                     <motion.div
+                      ref={currentScoreId === item.id ? newItemRef : undefined}
                       id={`ranking-${item.id}`}
                       key={item.id}
                       initial={{
