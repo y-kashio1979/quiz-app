@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   collection,
   getDocs,
@@ -25,6 +25,7 @@ type Props = {
 export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
   const [rankingDatas, setRankingDatas] = useState<RankingData[]>([]);
   const genreName = questionMap[genre as Genre].genreName;
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getRanking = async () => {
@@ -55,6 +56,27 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
     };
     getRanking();
   }, []);
+
+  useEffect(() => {
+    if (!scrollRef.current || !currentScoreId) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      const target = document.getElementById(`ranking-${currentScoreId}`);
+
+      if (!target || !scrollRef.current) {
+        return;
+      }
+
+      scrollRef.current.scrollTo({
+        top: target.offsetTop - 150,
+        behavior: "smooth",
+      });
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [rankingDatas, currentScoreId]);
 
   const playCount = rankingDatas.length;
 
@@ -150,7 +172,7 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
         )}
 
         {/* スクロール領域 */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6">
           <div className="space-y-3">
             {rankingDatas.length === 0 ? (
               <p className="text-center text-gray-500">
@@ -170,6 +192,7 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
 
                   return (
                     <motion.div
+                      id={`ranking-${item.id}`}
                       key={item.id}
                       initial={{
                         opacity: 0,
@@ -208,9 +231,19 @@ export const Ranking = ({ genre, currentScoreId, user, close }: Props) => {
                             {item.userName || "名無し"}
 
                             {currentScoreId === item.id && (
-                              <span className="ml-2 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-bold tracking-wide text-white">
+                              <motion.span
+                                animate={{
+                                  scale: [1, 1.2, 1],
+                                  opacity: [1, 0.6, 1],
+                                }}
+                                transition={{
+                                  duration: 1,
+                                  repeat: Infinity,
+                                }}
+                                className="ml-2 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-bold tracking-wide text-white"
+                              >
                                 NEW
-                              </span>
+                              </motion.span>
                             )}
                           </p>
 
