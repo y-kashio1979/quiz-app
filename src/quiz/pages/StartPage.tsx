@@ -125,7 +125,7 @@ export const StartPage = ({
             transition
             hover:bg-gray-50
           "
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/quiz")}
         >
           ジャンル選択に戻る
         </button>
